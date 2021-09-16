@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  dii_orderingsvc:
+    image: ${DOCKER_REGISTRY-}diiorderingsvc
+    build:
+      context: .
+      dockerfile: src/Dii_OrderingSvc/Dockerfile
+  dii_orderingsvc-dapr:
+     image: "daprio/daprd:latest"
+     command: [ "./daprd", "-app-id", "diiorderingsvc", "-app-port", "80" ]
+     depends_on:
+        - dii_orderingsvc
+     network_mode: "service:dii_orderingsvc"   

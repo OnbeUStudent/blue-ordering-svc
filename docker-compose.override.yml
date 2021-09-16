@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  dii_orderingsvc:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
