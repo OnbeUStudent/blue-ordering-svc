@@ -4,7 +4,6 @@ using Dii_OrderingSvc.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace Dii_OrderingSvc.Controllers
 {
@@ -30,15 +29,11 @@ namespace Dii_OrderingSvc.Controllers
 
         // GET: api/Movies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(string id)
+        public async Task<ActionResult<Movie>> GetMovie(long id)
         {
-            if (!Guid.TryParse(id, out Guid movieIdAsGuid))
-            {
-                return NotFound();
-            }
             var movie = await _context.Movies
                 .Include(movie => movie.MovieMetadata)
-                .SingleOrDefaultAsync(movie => movie.MovieId == movieIdAsGuid);
+                .SingleOrDefaultAsync(movie => movie.MovieId == id);
             if (movie == null)
             {
                 return NotFound();
@@ -47,7 +42,7 @@ namespace Dii_OrderingSvc.Controllers
             return movie;
         }
 
-        private bool MovieExists(Guid id)
+        private bool MovieExists(long id)
         {
             return _context.Movies.Any(e => e.MovieId == id);
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using System;
 using DiiCommon.Time;
 using Dii_OrderingSvc.Data;
@@ -68,20 +69,13 @@ namespace Dii_OrderingSvc.Features.SeedData
             }
             context.SaveChanges();
 
-            long longMovieId = 0;
             foreach (string json in GetJsonAssets("Assets.MovieMetadata"))
             {
                 var movieMetadata = MovieMetadata.FromJson(json);
                 if (!context.MovieMetadatas.Any(m => m.ImdbId == movieMetadata.ImdbId))
                 {
-                    longMovieId++;
-                    byte[] guidData = new byte[16];
-                    Array.Copy(BitConverter.GetBytes(longMovieId), guidData, 8);
-                    var guidMovieId = new Guid(guidData);
-
                     var movie = new Movie
                     {
-                        MovieId = guidMovieId,
                         Title = movieMetadata.Title,
                         MovieMetadata = movieMetadata
                     };
