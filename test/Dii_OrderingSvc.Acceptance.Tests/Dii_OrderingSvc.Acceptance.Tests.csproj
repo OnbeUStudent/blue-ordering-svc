@@ -17,11 +17,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Drivers\" />
-    <Folder Include="Features\" />
-    <Folder Include="Hooks\" />
-    <Folder Include="Steps\" />
-  </ItemGroup>
-
 </Project>

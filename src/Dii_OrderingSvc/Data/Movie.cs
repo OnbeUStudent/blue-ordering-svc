@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Dii_OrderingSvc.Data
 {
     public class Movie
     {
-        public long MovieId { get; set; }
+        public Guid MovieId { get; set; }
 
         public virtual ICollection<Booking> Bookings { get; set; }
 
