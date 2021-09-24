@@ -11,4 +11,16 @@ services:
      command: [ "./daprd", "-app-id", "diiorderingsvc", "-app-port", "80" ]
      depends_on:
         - dii_orderingsvc
-     network_mode: "service:dii_orderingsvc"   
+     network_mode: "service:dii_orderingsvc"
+  
+  dii_moviecatalogsvc.fake:
+    image: ${DOCKER_REGISTRY-}diimoviecatalogsvcfake
+    build:
+      context: .
+      dockerfile: fake/Dii_MovieCatalogSvc.Fake/Dockerfile
+  dii_moviecatalogsvc-dapr:
+     image: "daprio/daprd:latest"
+     command: [ "./daprd", "-app-id", "diimoviecatalogsvc", "-app-port", "80" ]
+     depends_on:
+        - dii_moviecatalogsvc.fake
+     network_mode: "service:dii_moviecatalogsvc.fake" 

@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapr.Client;
-using Dii_OrderingSvc.Clients;
-using Dii_OrderingSvc.Data;
-using Dii_OrderingSvc.Features.SeedData;
+using Dii_MovieCatalogSvc.Fake.Data;
+using Dii_MovieCatalogSvc.Fake.Features.SeedData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace Dii_OrderingSvc
+namespace Dii_MovieCatalogSvc.Fake
 {
     public class Startup
     {
@@ -27,8 +25,9 @@ namespace Dii_OrderingSvc
         {
             Configuration = configuration;
         }
-        private readonly string _policyName = "CorsPolicy";
+
         public IConfiguration Configuration { get; }
+        private readonly string _policyName = "CorsPolicy";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -60,17 +59,17 @@ namespace Dii_OrderingSvc
                         RequireSignedTokens = false
                     };
                 });
-            services.AddHealthChecks();
+
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
             ;
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dii_OrderingSvc", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dii_MovieCatalogSvc.Fake", Version = "v1" });
             });
-            services.AddDbContext<OrderingSvcContext>(options =>
-                   options.UseInMemoryDatabase(nameof(OrderingSvcContext)));
+            services.AddDbContext<MovieCatalogSvcContext>(options =>
+                   options.UseInMemoryDatabase(nameof(MovieCatalogSvcContext)));
 
             services.AddCors(opt =>
             {
@@ -81,21 +80,16 @@ namespace Dii_OrderingSvc
                         .AllowAnyMethod();
                 });
             });
-            services.AddSingleton(typeof(MovieCatalogSvcClient), serviceProvider =>
-            {
-                var httpClient = DaprClient.CreateInvokeHttpClient("diimoviecatalogsvc");
-                return new MovieCatalogSvcClient(httpClient);
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, OrderingSvcContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MovieCatalogSvcContext context)
         {
-          //  if (env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dii_OrderingSvc v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dii_MovieCatalogSvc.Fake v1"));
             }
 
             app.UseRouting();
@@ -109,7 +103,6 @@ namespace Dii_OrderingSvc
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/hc");
             });
         }
     }
